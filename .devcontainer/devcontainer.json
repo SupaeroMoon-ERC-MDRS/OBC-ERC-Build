@@ -1,0 +1,30 @@
+{
+    "name": "SupaeroMoon Development",
+    "dockerComposeFile": "../docker-compose.yml",
+    "service": "linux",
+    "workspaceFolder": "/supaeromoon",
+    "mounts": [
+        "type=bind,source=../supaeromoon,target=/supaeromoon"
+    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.cpptools",
+                "ms-vscode.cmake-tools",
+                "ms-azuretools.vscode-docker"
+            ],
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "cmake.configureOnOpen": true,
+                "cmake.buildDirectory": "${workspaceFolder}/build"
+            }
+        }
+    },
+    "postCreateCommand": "sudo apt-get update && sudo apt-get install -y libboost-all-dev libeigen3-dev libopencv-dev",
+    "remoteUser": "root",
+    "remoteEnv": {
+        "PATH": "/usr/local/cuda/bin:${env:PATH}"
+    },
+    "initializeCommand": "echo 'Container initialized'",
+    "shutdownAction": "none"
+}

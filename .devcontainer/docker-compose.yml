@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  base:
+    build:
+      context: ../Docker/base
+      dockerfile: Dockerfile
+    image: supaeromoon:base
+
+  linux:
+    build:
+      context: ../Docker/linux
+      dockerfile: Dockerfile
+    image: supaeromoon:linux
+    network_mode: "host"
+    volumes:
+      - ../../supaeromoon:/supaeromoon
+    environment:
+      - ROS_DOMAIN_ID=0
+
+  mac:
+    build:
+      context: ../Docker/mac
+      dockerfile: Dockerfile
+    image: supaeromoon:mac
+    network_mode: "host"
+    volumes:
+      - ../../supaeromoon:/supaeromoon
+    environment:
+      - ROS_DOMAIN_ID=0
+
+  jetson:
+    build:
+      context: ../Docker/jetson
+      dockerfile: Dockerfile
+    image: supaeromoon:jetson
+    runtime: nvidia
+    network_mode: "host"
+    volumes:
+      - ../../supaeromoon:/supaeromoon
+    environment:
+      - ROS_DOMAIN_ID=0
+
+  rasp:
+    build:
+      context: ../Docker/rasp
+      dockerfile: Dockerfile
+    image: supaeromoon:rasp
+    network_mode: "host"
+    volumes:
+      - ../../supaeromoon:/supaeromoon
+    environment:
+      - ROS_DOMAIN_ID=0
+
+  windows:
+    build:
+      context: ../Docker/windows
+      dockerfile: Dockerfile
+    image: supaeromoon:windows
+    network_mode: "host"
+    volumes:
+      - ../../supaeromoon:/supaeromoon
+    environment:
+      - ROS_DOMAIN_ID=0
+      - WSLENV=ROS_DOMAIN_ID
+
+networks:
+  obc_network:
+    driver: bridge
