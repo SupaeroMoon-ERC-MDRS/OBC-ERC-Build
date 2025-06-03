@@ -1,51 +1,91 @@
-# Docker Container how-to guide for OBC
+# Docker Container Setup for OBC-ERC Project
 
-For our project we need to let communicate two SBCs: Raspberry Pi 5 and NVIDIA Jetson Orin Nano. To do that we will use docker containers including ROS 2 Humble distribution. The development can be easily handled with Visual Studio Code.
+This project uses Docker containers with ROS 2 Humble for development and deployment across multiple platforms. The container system is designed to work on various architectures including x86_64 (AMD64), ARM64 (Raspberry Pi 5, NVIDIA Jetson, Apple Silicon), and supports Linux, macOS, and Windows environments.
 
 ## Prerequisites
 
-1. **Docker** installed on your system. ([Install Docker](https://docs.docker.com/get-docker/))
-2. **Visual Studio Code (VS Code)** installed. ([Download VS Code](https://code.visualstudio.com/))
-3. **Dev Containers extension** installed in VS Code.
-   - Open VS Code and go to the Extensions view (`Ctrl+Shift+X` or `Cmd+Shift+X` on macOS).
-   - Search for `Dev Containers` by Microsoft and install it.
+### Required
+- **Docker** installed on your system ([Install Docker](https://docs.docker.com/get-docker/))
 
-## Steps to Use Docker Containers in VS Code
+### Optional (for Visual Studio Code Development)
+If you prefer using VS Code for development:
+- Install **Visual Studio Code** ([Download VS Code](https://code.visualstudio.com/))
+- Install the **Dev Containers** extension:
+  1. Open VS Code
+  2. Go to Extensions (`Ctrl+Shift+X` or `Cmd+Shift+X` on macOS)
+  3. Search for and install `Dev Containers` by Microsoft
 
-### 1. Start Docker
+## Architecture
 
-Ensure that Docker is running on your system. You can verify this by running:
+The project uses a multi-stage Docker build approach:
+- `base/Dockerfile`: Common ROS 2 Humble setup and dependencies
+- Platform-specific Dockerfiles:
+  - `linux/`: For x86_64 Linux systems
+  - `mac/`: For Apple Silicon (M1/M2) Macs
+  - `rasp/`: For Raspberry Pi 5
+  - `jetson/`: For NVIDIA Jetson
+  - `windows/`: For Windows systems
 
-```bash
-docker --version
+## Quick Start
+
+### 1. Clone the Repository
+
+```zsh
+git clone https://github.com/SupaeroMoon-ERC-MDRS/OBC-ERC-Build.git
+cd OBC-ERC-Build
 ```
 
-### 2. Open a Remote Window
+### 2. Build and Run
 
-There is a _devcontainer_ directory for each SBC, being: **rasp** and **jetson**. Be sure to open the directory target of the development (eg. use _rasp_ container for communication scripts).
+The `build.sh` script automatically detects your platform and builds the appropriate container:
 
-On the left hand-side part of the bottom-bar you will find a green button `><`, click it and go to `Reopen in Container`.
-
-Once done, the environment is automatically created in docker, with both _rasp_ and _jetson_ container running, with one of them opened in the VSC remote window. The internal docker network is set up as-well and defined as **obc_network**.
-
-### 3. Use the Remote Window
-
-Now you should be inside a remote window of VSC. At this point you have the possibility of viewing the shell inside the container opening a new terminal in this window.
-
-The file system is composed of a set of directories including ROS and the OS.
-**OBC** and other sub-teams should have _r-w-x_ access only to the directory `workspace`, defined as the workdirectory of the container.
-
----
-
-### More information about images and containers
-
-Everything is handled in the directories `.devcontainer`. The containers' images are first built using a common `Dockerfile` and then run by VSC through the `dockercontainer.json` file
-using the configuration in the `docker-compose.yml` file instead.
-
-The procedure can be similarly done in a terminal by more simply running:
-
-```bash
-docker compose up -d
+```zsh
+./build.sh
 ```
 
-although, for development purposes, is recommended to have the environment handled in VSC.
+This script will:
+1. Detect your system architecture (AMD64/ARM64)
+2. Identify your platform (Linux/Mac/Windows/Raspberry Pi/Jetson)
+3. Build the base image with common ROS 2 dependencies
+4. Build the platform-specific image
+5. Start a container with the correct configuration
+
+### 3. Development Environment
+
+#### Option 1: Direct Terminal Access
+After running `build.sh`, you'll have direct terminal access to the container with ROS 2 Humble and all dependencies installed.
+
+#### Option 2: VS Code Integration
+1. Open VS Code
+2. Click the green `><` button in the bottom-left corner
+3. Select "Reopen in Container"
+4. VS Code will reopen with full development environment inside the container
+
+### Workspace Structure
+
+The container mounts a shared volume at `/supaeromoon`
+
+### Platform-Specific Details
+
+- **Linux AMD64**: Standard ROS 2 development environment
+- **Apple Silicon**: Optimized for M1/M2 with ARM64 support
+- **Raspberry Pi**: Custom configuration for RPi 5
+- **Jetson**: NVIDIA-specific optimizations and CUDA support
+- **Windows**: WSL2 compatibility layer
+
+### Advanced Usage
+
+You can build specific platform images manually:
+
+```zsh
+# Build base image
+docker compose build base
+
+# Build platform-specific image
+docker compose build [linux|mac|rasp|jetson|windows]
+
+# Run the container
+docker compose run --rm [platform]
+```
+
+For development, using `build.sh` is recommended as it handles all platform detection and configuration automatically.
