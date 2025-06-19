@@ -58,11 +58,8 @@ RUN apt-get update && apt-get install -y \
     ros-${ROS_DISTRO}-joy-linux \
     && rm -rf /var/lib/apt/lists/*
 
-# Install ROS 2 simulation packages
+# Install ROS 2 simulation packages (Gazebo packages are not available for Humble on Ubuntu 22.04)
 RUN apt-get update && apt-get install -y \
-    ros-${ROS_DISTRO}-gazebo-ros \
-    ros-${ROS_DISTRO}-gazebo-ros2-control \
-    ros-${ROS_DISTRO}-gazebo-plugins \
     ros-${ROS_DISTRO}-robot-state-publisher \
     ros-${ROS_DISTRO}-joint-state-publisher \
     ros-${ROS_DISTRO}-joint-state-publisher-gui \

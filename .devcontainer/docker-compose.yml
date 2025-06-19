@@ -11,6 +11,8 @@ services:
     build:
       context: ../Docker/linux
       dockerfile: Dockerfile
+      args:
+        BASE_IMAGE: supaeromoon:base
     image: supaeromoon:linux
     network_mode: "host"
     volumes:
@@ -22,6 +24,8 @@ services:
     build:
       context: ../Docker/mac
       dockerfile: Dockerfile
+      args:
+        BASE_IMAGE: supaeromoon:base
     image: supaeromoon:mac
     network_mode: "host"
     volumes:
@@ -33,6 +37,8 @@ services:
     build:
       context: ../Docker/jetson
       dockerfile: Dockerfile
+      args:
+        BASE_IMAGE: supaeromoon:base
     image: supaeromoon:jetson
     runtime: nvidia
     network_mode: "host"
@@ -45,6 +51,8 @@ services:
     build:
       context: ../Docker/rasp
       dockerfile: Dockerfile
+      args:
+        BASE_IMAGE: supaeromoon:base
     image: supaeromoon:rasp
     network_mode: "host"
     volumes:
